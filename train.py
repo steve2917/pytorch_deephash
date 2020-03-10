@@ -92,7 +92,7 @@ def test():
                 pbar.update(1)
         pbar.close()
         acc = 100 * int(correct) / int(total)
-        if epoch == args.epoch:
+        if epoch == args.epoch or epoch % 10 == 0:
             print('Saving')
             if not os.path.isdir('{}'.format(args.path)):
                 os.mkdir('{}'.format(args.path))
