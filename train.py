@@ -10,6 +10,7 @@ from torchvision import datasets, transforms
 from tqdm import tqdm
 
 from net import AlexNetPlusLatent
+from net import ResNetPlusLatent
 
 parser = argparse.ArgumentParser(description='Deep Hashing')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
@@ -40,7 +41,7 @@ def init_dataset():
          transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
     trainset = datasets.CIFAR10(root='./data', train=True, download=True,
                                 transform=transform_train)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=128,
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size = 32,
                                               shuffle=True, num_workers=0)
 
     testset = datasets.CIFAR10(root='./data', train=False, download=True,
@@ -92,17 +93,18 @@ def test():
                 pbar.update(1)
         pbar.close()
         acc = 100 * int(correct) / int(total)
-        if epoch == args.epoch or epoch % 10 == 0:
-            print('Saving')
-            if not os.path.isdir('{}'.format(args.path)):
-                os.mkdir('{}'.format(args.path))
-            torch.save(net.state_dict(), './{}/{}'.format(args.path, acc))
+        #if epoch == args.epoch or epoch % 10 == 0:
+        print('Saving')
+        if not os.path.isdir('{}'.format(args.path)):
+            os.mkdir('{}'.format(args.path))
+        torch.save(net.state_dict(), './{}/{}'.format(args.path, acc))
 
 
 if __name__ == '__main__':
     torch.cuda.empty_cache()  # When using windows, this line is needed
     trainloader, testloader = init_dataset()
-    net = AlexNetPlusLatent(args.bits)
+    #net = AlexNetPlusLatent(args.bits)
+    net = ResNetPlusLatent(args.bits)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("Use device: " + str(device))
     net.to(device)
